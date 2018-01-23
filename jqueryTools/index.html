@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<script src="./js/jquery-1.7.2.js"></script>
+<script src="./js/jquery.event.drag-2.2.js"></script>
+<script src="./js/jquery.event.drag.live-2.2.js"></script>
+<script src="./js/jquery.event.drop-2.2.js"></script>
+<script src="./js/jquery.event.drop.live-2.2.js"></script>
+<title>拖曳选中</title>
+</head>
+<body>
+<script type="text/javascript">
+jQuery(function($){
+    //拖曳框选
+    $( ".selectBox" )
+        .drag("start",function( ev, dd ){
+
+            return $('<div class="selection" />')
+                .css('opacity', .50 )
+                .appendTo( document.body );
+        })
+        .drag(function( ev, dd ){
+
+            $( dd.proxy ).css({
+                top: Math.min( ev.pageY, dd.startY ),
+                left: Math.min( ev.pageX, dd.startX ),
+                height: Math.abs( ev.pageY - dd.startY ),
+                width: Math.abs( ev.pageX - dd.startX )
+            });
+        })
+        .drag("end",function( ev, dd ){
+
+            $( dd.proxy ).remove();
+        });
+    //选中添加样式
+    $('.drop')
+        .drop("start",function(){
+            console.log( 'start' );
+            var obj = $( this );
+            obj.addClass("active");
+            if( obj.is(".dropped") ){
+                console.log( 'end-remove' );
+                obj.removeClass('dropped')       
+            } 
+        })
+        .drop(function( ev, dd ){
+
+            var obj = $( this );
+            obj.toggleClass( "dropped" );
+            if( obj.is('.active')  ){
+                obj.addClass('dropped')   
+            }else{
+                obj.removeClass('dropped')   
+            }
+            console.log( 1 );
+
+        })
+        .drop("end",function(){
+            console.log( 'end' );
+            var obj = $( this );
+            obj.removeClass("active");
+        });
+    $.drop({ multi: true });    
+
+    //单选
+    $(".drop").each(function(i,n){
+        $(n).click(function(e){
+            var obj = $(this);
+            if(!obj.is('.dropped')){
+                obj.addClass('dropped')
+            }else{
+                obj.removeClass('dropped')
+            }
+           event.stopPropagation();
+        })
+    });
+    $(".selectBox").click(function(e){
+            if($('.drop').is('.dropped')){
+                $('.drop').removeClass('dropped')
+            }
+         return e.preventDefault(); 
+    })
+    
+});
+//全选
+function selectAll(){
+    $(".drop").addClass("dropped")
+}
+//清除
+function clearSelect(){
+    $(".drop").removeClass("dropped")
+}
+</script>
+
+
+<div class="selectBox">
+    <div class="drop">Jack</div>
+    <div class="drop">Kate</div>
+    <div class="drop">Hugo</div>
+    <div class="drop">James</div>
+    <div class="drop">John</div>
+    <div class="drop">Jin</div>
+    <div class="drop">Sun</div>
+    <div class="drop">Sayid</div>
+    <div class="drop">Walt</div>
+    <div class="drop">Michael</div>
+    <div class="drop">Claire</div>
+    <div class="drop">Aaron</div>
+    <div class="drop">Charlie</div>
+    <div class="drop">Desmond</div>
+    <div class="drop">Penny</div>
+    <div class="drop">Ben</div>
+    <div class="drop">Juliet</div>
+    <div class="drop">Richard</div>
+    <div class="drop">Alex</div>
+    <div class="drop">Miles</div>
+    <div class="drop">Charlotte</div>
+    <div class="drop">Daniel</div>
+    <div class="drop">Vincent</div>
+    <div class="drop">Frank</div>
+    <div class="drop">Jacob</div>
+</div>
+<a  href="javascript:selectAll()" >全选</a>
+<a  href="javascript:clearSelect()">清除</a>
+
+<style type="text/css">
+.selectBox{
+
+    width: 1000px;
+    margin: auto;
+    padding: 10px;
+    border:1px solid #ccc;
+}
+.selection {
+    position: absolute;
+    border: 1px solid #89B;
+    background: #BCE;
+    background-color: #BEC;
+    border-color: #8B9;
+    }
+.size2 {
+    height: 118px;
+    line-height: 118px;
+    }
+.size3 {
+    height: 178px;
+    line-height: 178px;
+    }
+.drop {
+    display: inline-block;
+    border: 1px dashed #888;
+    background: #EEE;
+    text-align: center;
+    padding: 20px;
+    margin: 0 10px 10px 0;
+    }
+.dropped {
+    background-color: #EBC;
+    border-color: #B89;
+    }   
+.active {  
+    background-color: #CEB;
+    border-color: #9B8;
+    }
+</style>
+</body>
+</html>
